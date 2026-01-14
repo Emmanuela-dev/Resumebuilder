@@ -70,9 +70,9 @@
 }
 
 .tab.active {
-  color: #667eea;
+  color: #1a91f0;
   background: white;
-  border-bottom: 2px solid #667eea;
+  border-bottom: 2px solid #1a91f0;
 }
 
 .editor-sections {
@@ -187,7 +187,7 @@
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #1a91f0;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -287,9 +287,9 @@
 }
 
 .template-option.active {
-  border-color: #667eea;
-  background: #f0f4ff;
-  color: #667eea;
+  border-color: #1a91f0;
+  background: #f0f9ff;
+  color: #1a91f0;
 }
 
 .color-grid {
@@ -348,9 +348,9 @@
 }
 
 .layout-option.active {
-  border-color: #667eea;
-  background: #f0f4ff;
-  color: #667eea;
+  border-color: #1a91f0;
+  background: #f0f9ff;
+  color: #1a91f0;
 }
 
 .loading-container {

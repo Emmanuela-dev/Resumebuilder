@@ -17,9 +17,10 @@ export default function PersonalInfoSection({ resumeId, data }) {
     if (name === 'experience_type') {
       updateResume(resumeId, { experience_type: value });
     } else {
-      // Auto-save personal info after 2 seconds
+      // Auto-save personal info after 2 seconds (exclude experience_type)
       setTimeout(() => {
-        updateSection(resumeId, 'personal_info', { ...newData, resume_id: resumeId });
+        const { experience_type, ...personalInfoData } = newData;
+        updateSection(resumeId, 'personal_info', { ...personalInfoData, resume_id: resumeId });
       }, 2000);
     }
   };

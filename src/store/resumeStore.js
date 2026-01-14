@@ -86,7 +86,7 @@ export const useResumeStore = create((set, get) => ({
   },
   
   // Create new resume
-  createResume: async (title) => {
+  createResume: async (title, templateId = 'modern') => {
     try {
       // Get current user from Supabase auth
       const { data: { user } } = await supabase.auth.getUser();
@@ -100,6 +100,7 @@ export const useResumeStore = create((set, get) => ({
         .insert([{ 
           title, 
           summary: '',
+          template_id: templateId,
           user_id: user.id  // Add user_id to pass RLS policy
         }])
         .select()

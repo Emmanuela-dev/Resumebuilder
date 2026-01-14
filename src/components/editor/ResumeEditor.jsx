@@ -145,7 +145,7 @@ export default function ResumeEditor() {
               <div className="design-section">
                 <h3>Template</h3>
                 <div className="template-grid">
-                  {['modern', 'classic', 'minimal', 'creative'].map((template) => (
+                  {['modern', 'classic', 'minimal', 'creative', 'executive', 'technical'].map((template) => (
                     <button
                       key={template}
                       className={`template-option ${currentResume.template_id === template ? 'active' : ''}`}

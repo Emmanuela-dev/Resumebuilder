@@ -14,15 +14,18 @@ export default function ResumePreview({ resume }) {
         {/* Header */}
         <header className="resume-header">
           <h1>{personalInfo?.full_name || 'Your Name'}</h1>
-          <div className="contact-info">
-            {personalInfo?.email && <span>{personalInfo.email}</span>}
-            {personalInfo?.phone && <span>{personalInfo.phone}</span>}
+          {personalInfo?.title && <div className="job-title">{personalInfo.title}</div>}
+          <div className="header-location">
             {personalInfo?.location && <span>{personalInfo.location}</span>}
           </div>
+          <div className="contact-info">
+            {personalInfo?.phone && <span>{personalInfo.phone}</span>}
+            {personalInfo?.email && <span>{personalInfo.email}</span>}
+          </div>
           <div className="links">
-            {personalInfo?.website && <a href={personalInfo.website} target="_blank" rel="noopener noreferrer">Website</a>}
-            {personalInfo?.linkedin && <a href={personalInfo.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>}
-            {personalInfo?.github && <a href={personalInfo.github} target="_blank" rel="noopener noreferrer">GitHub</a>}
+            {personalInfo?.linkedin && <span>LinkedIn: {personalInfo.linkedin}</span>}
+            {personalInfo?.website && <span>Website: {personalInfo.website}</span>}
+            {personalInfo?.github && <span>GitHub: {personalInfo.github}</span>}
           </div>
         </header>
         
@@ -38,9 +41,9 @@ export default function ResumePreview({ resume }) {
         {skills && skills.length > 0 && (
           <section className="resume-section">
             <h2>CORE COMPETENCIES</h2>
-            <div className="competencies-list">
-              {skills.slice(0, 6).map((skill) => (
-                <span key={skill.id} className="competency-tag">• {skill.name}</span>
+            <div className="competencies-grid">
+              {skills.slice(0, 12).map((skill) => (
+                <div key={skill.id} className="competency-item">• {skill.name}</div>
               ))}
             </div>
           </section>
@@ -57,24 +60,31 @@ export default function ResumePreview({ resume }) {
                 <div className="item-header-row">
                   <h3>{exp.position}</h3>
                   <span className="date">
-                    {exp.start_date && formatDate(exp.start_date)} - {exp.current ? 'Present' : exp.end_date && formatDate(exp.end_date)}
+                    ({exp.start_date && formatDate(exp.start_date)} - {exp.current ? 'Present' : exp.end_date && formatDate(exp.end_date)})
                   </span>
                 </div>
-                <div className="company-info">
-                  <strong>{exp.company}</strong>
-                  {exp.location && <span> • {exp.location}</span>}
-                </div>
-                {exp.description && <p>{exp.description}</p>}
+                <div className="achievements-header">Key Achievements & Contributions</div>
+                {exp.description && <p className="achievement-item">• {exp.description}</p>}
+                {exp.achievements && Array.isArray(exp.achievements) && exp.achievements.map((achievement, idx) => (
+                  <p key={idx} className="achievement-item">• {achievement}</p>
+                ))}
               </div>
             ))}
             
             {/* Then show projects */}
             {projects && projects.length > 0 && projects.map((project) => (
               <div key={project.id} className="project-item">
-                <h3>{project.name}</h3>
-                {project.description && <p>{project.description}</p>}
-                {project.technologies && <div className="tech-stack"><strong>Technologies:</strong> {project.technologies}</div>}
-                {project.url && <a href={project.url} target="_blank" rel="noopener noreferrer">{project.url}</a>}
+                <div className="item-header-row">
+                  <h3>{project.name}</h3>
+                  {project.start_date && (
+                    <span className="date">
+                      ({formatDate(project.start_date)} - {project.end_date ? formatDate(project.end_date) : 'Present'})
+                    </span>
+                  )}
+                </div>
+                <div className="achievements-header">Key Achievements & Contributions</div>
+                {project.description && <p className="achievement-item">• {project.description}</p>}
+                {project.technologies && <p className="achievement-item">• Technologies: {project.technologies}</p>}
               </div>
             ))}
           </section>
@@ -86,17 +96,16 @@ export default function ResumePreview({ resume }) {
             <h2>EDUCATION</h2>
             {education.map((edu) => (
               <div key={edu.id} className="education-item">
-                <div className="item-header-row">
-                  <h3>{edu.degree} {edu.field_of_study && `in ${edu.field_of_study}`}</h3>
-                  <span className="date">
-                    {edu.graduation_date && formatDate(edu.graduation_date)}
-                  </span>
-                </div>
+                <h3>{edu.degree} {edu.field_of_study && `in ${edu.field_of_study}`}</h3>
                 <div className="institution-info">
                   <strong>{edu.institution}</strong>
-                  {edu.gpa && <span> • GPA: {edu.gpa}</span>}
+                  {edu.location && <span> – {edu.location}</span>}
                 </div>
-                {edu.description && <p>{edu.description}</p>}
+                <div className="education-date">
+                  {edu.start_date && formatYear(edu.start_date)} – {edu.current ? 'Present' : edu.graduation_date ? formatYear(edu.graduation_date) : 'Present'}
+                  {edu.current && edu.description && <span> ({edu.description})</span>}
+                </div>
+                {edu.gpa && <div>GPA: {edu.gpa}</div>}
               </div>
             ))}
           </section>
@@ -106,7 +115,7 @@ export default function ResumePreview({ resume }) {
         {skills && skills.filter(s => s.category !== 'Soft Skills').length > 0 && (
           <section className="resume-section">
             <h2>TECHNICAL SKILLS</h2>
-            <div className="skills-grid">
+            <div className="skills-compact">
               {(() => {
                 const technicalSkills = skills.filter(s => s.category !== 'Soft Skills');
                 const groupedSkills = technicalSkills.reduce((acc, skill) => {
@@ -117,7 +126,7 @@ export default function ResumePreview({ resume }) {
                 }, {});
                 
                 return Object.entries(groupedSkills).map(([category, skillNames]) => (
-                  <div key={category} className="skill-category">
+                  <div key={category} className="skill-line">
                     <strong>{category}:</strong> {skillNames.join(', ')}
                   </div>
                 ));
@@ -130,9 +139,9 @@ export default function ResumePreview({ resume }) {
         {skills && skills.filter(s => s.category === 'Soft Skills').length > 0 && (
           <section className="resume-section">
             <h2>SOFT SKILLS</h2>
-            <div className="soft-skills-list">
+            <div className="soft-skills-compact">
               {skills.filter(s => s.category === 'Soft Skills').map((skill) => (
-                <span key={skill.id} className="soft-skill-tag">• {skill.name}</span>
+                <div key={skill.id} className="soft-skill-line">• {skill.name}</div>
               ))}
             </div>
           </section>
@@ -144,9 +153,12 @@ export default function ResumePreview({ resume }) {
             <h2>ACHIEVEMENTS & CERTIFICATIONS</h2>
             {certifications.map((cert) => (
               <div key={cert.id} className="certification-item">
-                <h3>{cert.name}</h3>
-                <div>{cert.issuing_organization}</div>
-                {cert.issue_date && <span className="date">Issued: {formatDate(cert.issue_date)}</span>}
+                <div className="cert-header">
+                  <strong>{cert.name}</strong>
+                  {cert.issue_date && <span> : {formatMonthYear(cert.issue_date)}</span>}
+                  {cert.issuing_organization && <span> | {cert.issuing_organization}</span>}
+                </div>
+                {cert.description && <p className="cert-description">{cert.description}</p>}
               </div>
             ))}
           </section>
@@ -156,17 +168,17 @@ export default function ResumePreview({ resume }) {
         {references && references.length > 0 && (
           <section className="resume-section">
             <h2>REFEREES</h2>
-            {references.map((ref) => (
-              <div key={ref.id} className="reference-item">
-                <h3>{ref.name}</h3>
-                <div className="reference-details">
-                  {ref.position && <div><strong>{ref.position}</strong></div>}
+            <div className="referees-grid">
+              {references.map((ref) => (
+                <div key={ref.id} className="referee-item">
+                  <div className="referee-name">{ref.name}</div>
+                  {ref.position && <div>{ref.position}</div>}
                   {ref.company && <div>{ref.company}</div>}
+                  {ref.phone && <div>Tel: {ref.phone}</div>}
                   {ref.email && <div>Email: {ref.email}</div>}
-                  {ref.phone && <div>Phone: {ref.phone}</div>}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </section>
         )}
       </div>
@@ -175,6 +187,18 @@ export default function ResumePreview({ resume }) {
 }
 
 function formatDate(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+}
+
+function formatYear(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.getFullYear().toString();
+}
+
+function formatMonthYear(dateString) {
   if (!dateString) return '';
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });

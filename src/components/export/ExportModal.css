@@ -101,17 +101,17 @@
 }
 
 .export-format-card:hover {
-  border-color: #6366f1;
+  border-color: #1a91f0;
   background: #f9fafb;
 }
 
 .export-format-card.active {
-  border-color: #6366f1;
+  border-color: #1a91f0;
   background: #eef2ff;
 }
 
 .export-format-card svg {
-  color: #6366f1;
+  color: #1a91f0;
   margin-bottom: 0.75rem;
 }
 
@@ -161,12 +161,12 @@
 }
 
 .btn-primary {
-  background: #6366f1;
+  background: #1a91f0;
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #4f46e5;
+  background: #1577cc;
 }
 
 .btn-primary:disabled,

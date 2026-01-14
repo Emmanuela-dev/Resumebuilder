@@ -4,6 +4,7 @@ import { useAuthStore } from '../../store/authStore';
 import { useResumeStore } from '../../store/resumeStore';
 import { FileText, Plus, Edit, Trash2, Copy, Eye, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
+import TemplateSelector from '../templates/TemplateSelector';
 import './Dashboard.css';
 
 export default function Dashboard() {
@@ -11,7 +12,9 @@ export default function Dashboard() {
   const { user, profile, signOut } = useAuthStore();
   const { resumes, loading, fetchResumes, createResume, deleteResume, duplicateResume } = useResumeStore();
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showTemplateSelector, setShowTemplateSelector] = useState(false);
   const [newResumeTitle, setNewResumeTitle] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState('modern');
   
   useEffect(() => {
     fetchResumes();
@@ -23,14 +26,26 @@ export default function Dashboard() {
     if (!newResumeTitle.trim()) {
       toast.error('Please enter a resume title');
       return;
-    }
-    
+    setShowCreateModal(false);
+    setShowTemplateSelector(true);
+  };
+
+  const handleTemplateSelected = async () => {
     try {
-      const resume = await createResume(newResumeTitle);
-      setShowCreateModal(false);
+      const resume = await createResume(newResumeTitle, selectedTemplate);
+      setShowTemplateSelector(false);
       setNewResumeTitle('');
+      setSelectedTemplate('modern');
       navigate(`/resume/${resume.id}/edit`);
     } catch (error) {
+      console.error('Error creating resume:', error);
+      toast.error('Failed to create resume');
+    }
+  };
+
+  const handleCancelTemplateSelection = () => {
+    setShowTemplateSelector(false);
+    setShowCreateModal(true); catch (error) {
       console.error('Error creating resume:', error);
     }
   };
@@ -208,10 +223,33 @@ export default function Dashboard() {
                     placeholder="e.g., Software Engineer Resume"
                     autoFocus
                   />
-                </div>
+                </Next: Choose Template
+                </button>
               </div>
-              
-              <div className="modal-footer">
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showTemplateSelector && (
+        <div className="modal-overlay full-screen" onClick={handleCancelTemplateSelection}>
+          <div className="modal template-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Choose a Template</h2>
+              <button 
+                className="modal-close"
+                onClick={handleCancelTemplateSelection}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body no-padding">
+              <TemplateSelector
+                selectedTemplate={selectedTemplate}
+                onSelectTemplate={setSelectedTemplate}
+                onContinue={handleTemplateSelected}
+              />
+            </div className="modal-footer">
                 <button 
                   type="button"
                   className="btn btn-outline"
