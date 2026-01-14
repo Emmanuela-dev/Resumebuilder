@@ -26,6 +26,8 @@ export default function Dashboard() {
     if (!newResumeTitle.trim()) {
       toast.error('Please enter a resume title');
       return;
+    }
+    
     setShowCreateModal(false);
     setShowTemplateSelector(true);
   };
@@ -45,9 +47,7 @@ export default function Dashboard() {
 
   const handleCancelTemplateSelection = () => {
     setShowTemplateSelector(false);
-    setShowCreateModal(true); catch (error) {
-      console.error('Error creating resume:', error);
-    }
+    setShowCreateModal(true);
   };
   
   const handleDeleteResume = async (resumeId, title) => {
