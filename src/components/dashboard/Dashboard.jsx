@@ -223,7 +223,19 @@ export default function Dashboard() {
                     placeholder="e.g., Software Engineer Resume"
                     autoFocus
                   />
-                </Next: Choose Template
+                </div>
+              </div>
+              
+              <div className="modal-footer">
+                <button 
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={() => setShowCreateModal(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Next: Choose Template
                 </button>
               </div>
             </form>
