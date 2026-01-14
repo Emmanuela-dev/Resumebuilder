@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useResumeStore } from '../../../store/resumeStore';
 import { GraduationCap, Plus, Edit2, Trash2, Save, X } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -9,6 +9,13 @@ export default function EducationSection({ resumeId, data }) {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
   const { addSectionItem, updateSectionItem, deleteSectionItem } = useResumeStore();
+  
+  // Sync local state with prop changes
+  useEffect(() => {
+    if (data) {
+      setItems(data);
+    }
+  }, [data]);
   
   const handleAdd = async () => {
     const newItem = {
