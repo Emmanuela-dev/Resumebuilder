@@ -8,6 +8,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import Dashboard from './components/dashboard/Dashboard';
 import ResumeEditor from './components/editor/ResumeEditor';
 import Profile from './components/profile/Profile';
+import Analytics from './components/analytics/Analytics';
 import './App.css';
 
 function App() {
@@ -72,7 +73,7 @@ function App() {
             path="/resume/:id/analytics"
             element={
               <ProtectedRoute>
-                <div>Analytics Page - Coming Soon</div>
+                <Analytics />
               </ProtectedRoute>
             }
           />

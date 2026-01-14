@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useResumeStore } from '../../store/resumeStore';
 import { Save, Eye, ArrowLeft, Download, Share2 } from 'lucide-react';
@@ -13,6 +13,8 @@ import CertificationsSection from './sections/CertificationsSection';
 import LanguagesSection from './sections/LanguagesSection';
 import ReferencesSection from './sections/ReferencesSection';
 import ResumePreview from '../preview/ResumePreview';
+import AIResumeGenerator from '../ai/AIResumeGenerator';
+import ExportModal from '../export/ExportModal';
 import './ResumeEditor.css';
 
 export default function ResumeEditor() {
@@ -21,6 +23,8 @@ export default function ResumeEditor() {
   const { currentResume, loading, fetchResume, updateResume, scheduleAutoSave } = useResumeStore();
   const [showPreview, setShowPreview] = useState(false);
   const [activeTab, setActiveTab] = useState('content');
+  const [showExportModal, setShowExportModal] = useState(false);
+  const previewRef = useRef(null);
   
   useEffect(() => {
     if (id) {
@@ -41,7 +45,14 @@ export default function ResumeEditor() {
   };
   
   const handleExport = () => {
-    navigate(`/resume/${id}/export`);
+    setShowExportModal(true);
+  };
+
+  const handleAIGenerated = () => {
+    fetchResume(id);
+    setTimeout(() => {
+      setShowExportModal(true);
+    }, 1000);
   };
   
   const handleShare = () => {
@@ -109,7 +120,17 @@ export default function ResumeEditor() {
           
           {activeTab === 'content' ? (
             <div className="editor-sections">
-              <PersonalInfoSection resumeId={id} data={currentResume.personalInfo} />
+              <AIResumeGenerator 
+                resumeId={id} 
+                onGenerated={handleAIGenerated} 
+              />
+              <PersonalInfoSection 
+                resumeId={id} 
+                data={{
+                  ...currentResume.personalInfo,
+                  experience_type: currentResume.experience_type
+                }} 
+              />
               <SummarySection resumeId={id} data={currentResume.summary} />
               <ExperienceSection resumeId={id} data={currentResume.experience} />
               <EducationSection resumeId={id} data={currentResume.education} />
@@ -188,10 +209,19 @@ export default function ResumeEditor() {
         
         {showPreview && (
           <div className="editor-preview">
-            <ResumePreview resume={currentResume} />
+            <div ref={previewRef}>
+              <ResumePreview resume={currentResume} />
+            </div>
           </div>
         )}
       </div>
+
+      <ExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        resumeData={currentResume}
+        previewRef={previewRef}
+      />
     </div>
   );
 }

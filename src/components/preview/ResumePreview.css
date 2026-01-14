@@ -161,6 +161,98 @@
   color: #4a5568;
 }
 
+/* Core Competencies */
+.competencies-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.competency-tag {
+  font-size: 0.95rem;
+  color: #2d3748;
+  font-weight: 500;
+}
+
+/* Skills Grid */
+.skills-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skill-category {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #4a5568;
+}
+
+.skill-category strong {
+  color: #2d3748;
+  font-weight: 600;
+}
+
+/* Soft Skills */
+.soft-skills-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.soft-skill-tag {
+  font-size: 0.95rem;
+  color: #2d3748;
+  font-weight: 400;
+}
+
+/* Tech Stack */
+.tech-stack {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.tech-stack strong {
+  color: #2d3748;
+}
+
+/* References */
+.reference-item {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.reference-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.reference-item h3 {
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem 0;
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.reference-details {
+  margin-top: 0.5rem;
+  line-height: 1.6;
+}
+
+.reference-details div {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.reference-details strong {
+  color: #2d3748;
+  font-weight: 500;
+}
+
 /* Two Column Layout */
 .resume-template.two-column {
   display: grid;

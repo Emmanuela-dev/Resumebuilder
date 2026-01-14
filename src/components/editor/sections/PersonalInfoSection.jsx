@@ -6,17 +6,22 @@ import toast from 'react-hot-toast';
 export default function PersonalInfoSection({ resumeId, data }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [formData, setFormData] = useState(data || {});
-  const { updateSection } = useResumeStore();
+  const { updateSection, updateResume } = useResumeStore();
   
   const handleChange = (e) => {
     const { name, value } = e.target;
     const newData = { ...formData, [name]: value };
     setFormData(newData);
     
-    // Auto-save after 2 seconds
-    setTimeout(() => {
-      updateSection(resumeId, 'personal_info', { ...newData, resume_id: resumeId });
-    }, 2000);
+    // If changing experience_type, update the resume directly
+    if (name === 'experience_type') {
+      updateResume(resumeId, { experience_type: value });
+    } else {
+      // Auto-save personal info after 2 seconds
+      setTimeout(() => {
+        updateSection(resumeId, 'personal_info', { ...newData, resume_id: resumeId });
+      }, 2000);
+    }
   };
   
   return (
@@ -119,6 +124,21 @@ export default function PersonalInfoSection({ resumeId, data }) {
               onChange={handleChange}
               placeholder="https://github.com/username"
             />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="experience_type">Experience Type</label>
+            <select
+              id="experience_type"
+              name="experience_type"
+              value={formData.experience_type || 'work'}
+              onChange={handleChange}
+              className="form-select"
+            >
+              <option value="work">Work Experience</option>
+              <option value="project">Project Experience</option>
+            </select>
+            <small className="form-hint">Choose how to display your experience section on the resume</small>
           </div>
         </div>
       )}

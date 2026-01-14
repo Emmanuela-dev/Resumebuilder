@@ -3,7 +3,7 @@ import './ResumePreview.css';
 export default function ResumePreview({ resume }) {
   if (!resume) return null;
   
-  const { personalInfo, summary, experience, education, skills, projects, certifications, languages } = resume;
+  const { personalInfo, summary, experience, education, skills, projects, certifications, languages, references } = resume;
   
   return (
     <div className="preview-container" id="resume-preview">
@@ -26,19 +26,33 @@ export default function ResumePreview({ resume }) {
           </div>
         </header>
         
-        {/* Summary */}
+        {/* 1. PROFESSIONAL SUMMARY */}
         {summary && (
           <section className="resume-section">
-            <h2>Professional Summary</h2>
+            <h2>PROFESSIONAL SUMMARY</h2>
             <p>{summary}</p>
           </section>
         )}
         
-        {/* Experience */}
-        {experience && experience.length > 0 && (
+        {/* 2. CORE COMPETENCIES */}
+        {skills && skills.length > 0 && (
           <section className="resume-section">
-            <h2>Experience</h2>
-            {experience.map((exp) => (
+            <h2>CORE COMPETENCIES</h2>
+            <div className="competencies-list">
+              {skills.slice(0, 6).map((skill) => (
+                <span key={skill.id} className="competency-tag">• {skill.name}</span>
+              ))}
+            </div>
+          </section>
+        )}
+        
+        {/* 3. PROJECT EXPERIENCE / WORK EXPERIENCE */}
+        {(projects && projects.length > 0) || (experience && experience.length > 0) ? (
+          <section className="resume-section">
+            <h2>{resume.experience_type === 'project' ? 'PROJECT EXPERIENCE' : 'WORK EXPERIENCE'}</h2>
+            
+            {/* Show experience first if available */}
+            {experience && experience.length > 0 && experience.map((exp) => (
               <div key={exp.id} className="experience-item">
                 <div className="item-header-row">
                   <h3>{exp.position}</h3>
@@ -53,19 +67,29 @@ export default function ResumePreview({ resume }) {
                 {exp.description && <p>{exp.description}</p>}
               </div>
             ))}
+            
+            {/* Then show projects */}
+            {projects && projects.length > 0 && projects.map((project) => (
+              <div key={project.id} className="project-item">
+                <h3>{project.name}</h3>
+                {project.description && <p>{project.description}</p>}
+                {project.technologies && <div className="tech-stack"><strong>Technologies:</strong> {project.technologies}</div>}
+                {project.url && <a href={project.url} target="_blank" rel="noopener noreferrer">{project.url}</a>}
+              </div>
+            ))}
           </section>
-        )}
+        ) : null}
         
-        {/* Education */}
+        {/* 4. EDUCATION */}
         {education && education.length > 0 && (
           <section className="resume-section">
-            <h2>Education</h2>
+            <h2>EDUCATION</h2>
             {education.map((edu) => (
               <div key={edu.id} className="education-item">
                 <div className="item-header-row">
                   <h3>{edu.degree} {edu.field_of_study && `in ${edu.field_of_study}`}</h3>
                   <span className="date">
-                    {edu.start_date && formatDate(edu.start_date)} - {edu.current ? 'Present' : edu.end_date && formatDate(edu.end_date)}
+                    {edu.graduation_date && formatDate(edu.graduation_date)}
                   </span>
                 </div>
                 <div className="institution-info">
@@ -78,36 +102,46 @@ export default function ResumePreview({ resume }) {
           </section>
         )}
         
-        {/* Skills */}
-        {skills && skills.length > 0 && (
+        {/* 5. TECHNICAL SKILLS */}
+        {skills && skills.filter(s => s.category !== 'Soft Skills').length > 0 && (
           <section className="resume-section">
-            <h2>Skills</h2>
-            <div className="skills-list">
-              {skills.map((skill) => (
-                <span key={skill.id} className="skill-tag">{skill.name}</span>
+            <h2>TECHNICAL SKILLS</h2>
+            <div className="skills-grid">
+              {(() => {
+                const technicalSkills = skills.filter(s => s.category !== 'Soft Skills');
+                const groupedSkills = technicalSkills.reduce((acc, skill) => {
+                  const category = skill.category || 'Other';
+                  if (!acc[category]) acc[category] = [];
+                  acc[category].push(skill.name);
+                  return acc;
+                }, {});
+                
+                return Object.entries(groupedSkills).map(([category, skillNames]) => (
+                  <div key={category} className="skill-category">
+                    <strong>{category}:</strong> {skillNames.join(', ')}
+                  </div>
+                ));
+              })()}
+            </div>
+          </section>
+        )}
+        
+        {/* 6. SOFT SKILLS */}
+        {skills && skills.filter(s => s.category === 'Soft Skills').length > 0 && (
+          <section className="resume-section">
+            <h2>SOFT SKILLS</h2>
+            <div className="soft-skills-list">
+              {skills.filter(s => s.category === 'Soft Skills').map((skill) => (
+                <span key={skill.id} className="soft-skill-tag">• {skill.name}</span>
               ))}
             </div>
           </section>
         )}
         
-        {/* Projects */}
-        {projects && projects.length > 0 && (
-          <section className="resume-section">
-            <h2>Projects</h2>
-            {projects.map((project) => (
-              <div key={project.id} className="project-item">
-                <h3>{project.name}</h3>
-                {project.description && <p>{project.description}</p>}
-                {project.url && <a href={project.url} target="_blank" rel="noopener noreferrer">{project.url}</a>}
-              </div>
-            ))}
-          </section>
-        )}
-        
-        {/* Certifications */}
+        {/* 7. ACHIEVEMENTS & CERTIFICATIONS */}
         {certifications && certifications.length > 0 && (
           <section className="resume-section">
-            <h2>Certifications</h2>
+            <h2>ACHIEVEMENTS & CERTIFICATIONS</h2>
             {certifications.map((cert) => (
               <div key={cert.id} className="certification-item">
                 <h3>{cert.name}</h3>
@@ -118,17 +152,21 @@ export default function ResumePreview({ resume }) {
           </section>
         )}
         
-        {/* Languages */}
-        {languages && languages.length > 0 && (
+        {/* 8. REFEREES */}
+        {references && references.length > 0 && (
           <section className="resume-section">
-            <h2>Languages</h2>
-            <div className="languages-list">
-              {languages.map((lang) => (
-                <div key={lang.id}>
-                  <strong>{lang.language}</strong> - {lang.proficiency}
+            <h2>REFEREES</h2>
+            {references.map((ref) => (
+              <div key={ref.id} className="reference-item">
+                <h3>{ref.name}</h3>
+                <div className="reference-details">
+                  {ref.position && <div><strong>{ref.position}</strong></div>}
+                  {ref.company && <div>{ref.company}</div>}
+                  {ref.email && <div>Email: {ref.email}</div>}
+                  {ref.phone && <div>Phone: {ref.phone}</div>}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </section>
         )}
       </div>

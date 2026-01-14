@@ -26,6 +26,7 @@ CREATE TABLE resumes (
   color_theme TEXT DEFAULT 'blue',
   font_family TEXT DEFAULT 'inter',
   layout TEXT DEFAULT 'two-column',
+  experience_type TEXT DEFAULT 'work' CHECK (experience_type IN ('work', 'project')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   version INTEGER DEFAULT 1
