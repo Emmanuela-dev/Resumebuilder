@@ -104,7 +104,7 @@ export default function TemplateSelector({ selectedTemplate, onSelectTemplate, o
       {selectedTemplate && (
         <div className="selector-footer">
           <button className="btn-continue" onClick={onContinue}>
-            Continue with {templates.find(t => t.id === selectedTemplate)?.name}
+            Next: Choose Template
           </button>
         </div>
       )}
