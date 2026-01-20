@@ -10,12 +10,6 @@ export default function ReferencesSection({ resumeId, data }) {
   const [editData, setEditData] = useState({});
   const { addSectionItem, updateSectionItem, deleteSectionItem } = useResumeStore();
   
-  // Sync local state with prop changes
-  useEffect(() => {
-    if (data) {
-      setItems(data);
-    }
-  }, [data]);
   
   const handleAdd = async () => {
     const newItem = {

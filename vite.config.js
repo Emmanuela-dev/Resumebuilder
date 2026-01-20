@@ -31,5 +31,5 @@ export default defineConfig({
     }
   },
   // Don't fail on errors during development
-  logLevel: 'warn'
+  logLevel: 'info'
 })

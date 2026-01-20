@@ -13,9 +13,11 @@ import Analytics from './components/analytics/Analytics';
 import './App.css';
 
 function App() {
+  console.log('App component rendering');
   const { initialize, loading } = useAuthStore();
-  
+
   useEffect(() => {
+    console.log('Initializing auth');
     initialize();
   }, [initialize]);
   
