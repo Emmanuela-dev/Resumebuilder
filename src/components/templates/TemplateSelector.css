@@ -133,7 +133,7 @@
 }
 
 .template-preview-content.creative .preview-header {
-  border-bottom: 3px solid;
+  border-bottom: 3px solid transparent;
   border-image: linear-gradient(90deg, #1a91f0, #0ea5e9) 1;
   padding-bottom: 1rem;
   margin-bottom: 1rem;
