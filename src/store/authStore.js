@@ -41,10 +41,27 @@ export const useAuthStore = create((set) => ({
         data: {
           full_name: fullName,
         },
+        emailRedirectTo: `${window.location.origin}/login`,
       },
     });
     
     if (error) throw error;
+    
+    // Check if email confirmation is disabled (user is immediately confirmed)
+    if (data.user && data.session) {
+      // User is auto-confirmed, set them as logged in
+      set({ user: data.user });
+      
+      // Fetch profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+      
+      set({ profile });
+    }
+    
     return data;
   },
   
@@ -67,6 +84,18 @@ export const useAuthStore = create((set) => ({
     
     set({ profile });
     
+    return data;
+  },
+  
+  signInWithGoogle: async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    
+    if (error) throw error;
     return data;
   },
   
