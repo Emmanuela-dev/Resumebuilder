@@ -15,7 +15,7 @@ export default defineConfig({
          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
          'vendor-supabase': ['@supabase/supabase-js'],
          'vendor-ui': ['lucide-react', 'react-hot-toast'],
-         'vendor-export': ['jspdf', 'html2canvas', 'docx', 'file-saver'],
+         'vendor-export': ['jspdf', 'html2canvas', 'file-saver'],
          'vendor-form': ['zustand', 'date-fns']
        }
      }

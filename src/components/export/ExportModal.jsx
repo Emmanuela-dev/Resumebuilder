@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
-import { Download, X, FileText, File } from 'lucide-react';
-import { exportToPDF, exportToWord } from '../../lib/exportService';
+import { Download, X, FileText } from 'lucide-react';
+import { exportToPDF } from '../../lib/exportService';
 import toast from 'react-hot-toast';
 import './ExportModal.css';
 
@@ -22,9 +22,6 @@ export default function ExportModal({ isOpen, onClose, resumeData, previewRef })
         }
         await exportToPDF(previewRef.current, `${filename}.pdf`);
         toast.success('PDF downloaded successfully!');
-      } else if (format === 'word') {
-        await exportToWord(resumeData, `${filename}.docx`);
-        toast.success('Word document downloaded successfully!');
       }
 
       onClose();
@@ -52,22 +49,13 @@ export default function ExportModal({ isOpen, onClose, resumeData, previewRef })
           </p>
 
           <div className="export-formats">
-            <div 
+            <div
               className={`export-format-card ${format === 'pdf' ? 'active' : ''}`}
               onClick={() => setFormat('pdf')}
             >
               <FileText size={32} />
               <h3>PDF Document</h3>
               <p>Best for most applications. Preserves exact formatting.</p>
-            </div>
-
-            <div 
-              className={`export-format-card ${format === 'word' ? 'active' : ''}`}
-              onClick={() => setFormat('word')}
-            >
-              <File size={32} />
-              <h3>Word Document</h3>
-              <p>Editable format. Compatible with Microsoft Word.</p>
             </div>
           </div>
         </div>
