@@ -1,12 +1,13 @@
 import { useState, useRef } from 'react';
-import { Download, X, FileText } from 'lucide-react';
+import { Download, X, FileText, CheckCircle2 } from 'lucide-react';
 import { exportToPDF } from '../../lib/exportService';
+import { exportToATSPDF, exportToATSDOCX } from '../../lib/atsExportService';
 import toast from 'react-hot-toast';
 import './ExportModal.css';
 
 export default function ExportModal({ isOpen, onClose, resumeData, previewRef }) {
   const [exporting, setExporting] = useState(false);
-  const [format, setFormat] = useState('pdf');
+  const [format, setFormat] = useState('ats-pdf');
 
   if (!isOpen) return null;
 
@@ -16,12 +17,18 @@ export default function ExportModal({ isOpen, onClose, resumeData, previewRef })
     try {
       const filename = `${resumeData.title || 'resume'}_${new Date().toISOString().split('T')[0]}`;
 
-      if (format === 'pdf') {
+      if (format === 'ats-pdf') {
+        await exportToATSPDF(resumeData, `${filename}.pdf`);
+        toast.success('ATS-friendly PDF downloaded successfully!');
+      } else if (format === 'ats-docx') {
+        await exportToATSDOCX(resumeData, `${filename}.docx`);
+        toast.success('ATS-friendly DOCX downloaded successfully!');
+      } else if (format === 'pdf') {
         if (!previewRef?.current) {
           throw new Error('Resume preview not found');
         }
         await exportToPDF(previewRef.current, `${filename}.pdf`);
-        toast.success('PDF downloaded successfully!');
+        toast.success('Visual PDF downloaded successfully!');
       }
 
       onClose();
@@ -38,24 +45,43 @@ export default function ExportModal({ isOpen, onClose, resumeData, previewRef })
       <div className="export-modal" onClick={(e) => e.stopPropagation()}>
         <div className="export-modal-header">
           <h2>Export Resume</h2>
-          <button className="close-btn" onClick={onClose}>
-            <X size={20} />
-          </button>
-        </div>
-
-        <div className="export-modal-body">
-          <p className="export-description">
-            Choose a format to download your resume
-          </p>
+          <div className="ats-info-banner">
+            <CheckCircle2 size={20} />
+            <div>
+              <strong>ATS-Friendly Formats Recommended</strong>
+              <p>These formats are optimized to pass through Applicant Tracking Systems</p>
+            </div>
+          </div>
 
           <div className="export-formats">
+            <div
+              className={`export-format-card ${format === 'ats-pdf' ? 'active' : ''}`}
+              onClick={() => setFormat('ats-pdf')}
+            >
+              <div className="format-badge ats">ATS Optimized</div>
+              <FileText size={32} />
+              <h3>ATS-Friendly PDF</h3>
+              <p>Text-based PDF that can be parsed by any ATS system. Recommended for job applications.</p>
+            </div>
+
+            <div
+              className={`export-format-card ${format === 'ats-docx' ? 'active' : ''}`}
+              onClick={() => setFormat('ats-docx')}
+            >
+              <div className="format-badge ats">ATS Optimized</div>
+              <FileText size={32} />
+              <h3>ATS-Friendly DOCX</h3>
+              <p>Editable Word document optimized for ATS. Best for maximum compatibility.</p>
+            </div>
+
             <div
               className={`export-format-card ${format === 'pdf' ? 'active' : ''}`}
               onClick={() => setFormat('pdf')}
             >
+              <div className="format-badge visual">Visual</div>
               <FileText size={32} />
-              <h3>PDF Document</h3>
-              <p>Best for most applications. Preserves exact formatting.</p>
+              <h3>Visual PDF</h3>
+              <p>High-quality PDF with exact visual formatting. Best for printing or portfolios.</p>
             </div>
           </div>
         </div>

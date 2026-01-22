@@ -1,14 +1,37 @@
 import './ResumePreview.css';
+import { useResumeStore } from '../../store/resumeStore';
 
 export default function ResumePreview({ resume }) {
+  const { atsMode } = useResumeStore();
+  
   if (!resume) return null;
   
   const { personalInfo, summary, experience, education, skills, projects, certifications, languages, references } = resume;
   
+  // In ATS mode, force standard section names
+  const getSectionTitle = (defaultTitle) => {
+    if (!atsMode) return defaultTitle;
+    
+    // Force standard ATS-friendly section names
+    const atsHeaders = {
+      'PROFESSIONAL SUMMARY': 'PROFESSIONAL SUMMARY',
+      'CORE COMPETENCIES': 'SKILLS',
+      'WORK EXPERIENCE': 'WORK EXPERIENCE',
+      'PROJECT EXPERIENCE': 'PROJECT EXPERIENCE',
+      'EDUCATION': 'EDUCATION',
+      'TECHNICAL SKILLS': 'TECHNICAL SKILLS',
+      'SOFT SKILLS': 'SOFT SKILLS',
+      'ACHIEVEMENTS & CERTIFICATIONS': 'CERTIFICATIONS',
+      'REFEREES': 'REFERENCES'
+    };
+    
+    return atsHeaders[defaultTitle] || defaultTitle;
+  };
+  
   return (
     <div className="preview-container" id="resume-preview">
-      <div className={`resume-template ${resume.template_id} ${resume.layout}`} style={{
-        fontFamily: resume.font_family || 'inter',
+      <div className={`resume-template ${atsMode ? 'modern ats-mode' : resume.template_id} ${resume.layout}`} style={{
+        fontFamily: atsMode ? 'inter' : (resume.font_family || 'inter'),
         '--primary-color': getColorValue(resume.color_theme)
       }}>
         {/* Header */}
@@ -32,7 +55,7 @@ export default function ResumePreview({ resume }) {
         {/* 1. PROFESSIONAL SUMMARY */}
         {summary && (
           <section className="resume-section">
-            <h2>PROFESSIONAL SUMMARY</h2>
+            <h2>{getSectionTitle('PROFESSIONAL SUMMARY')}</h2>
             <p>{summary}</p>
           </section>
         )}
@@ -40,7 +63,7 @@ export default function ResumePreview({ resume }) {
         {/* 2. CORE COMPETENCIES */}
         {skills && skills.length > 0 && (
           <section className="resume-section">
-            <h2>CORE COMPETENCIES</h2>
+            <h2>{getSectionTitle('CORE COMPETENCIES')}</h2>
             <div className="competencies-grid">
               {skills.slice(0, 12).map((skill) => (
                 <div key={skill.id} className="competency-item">• {skill.name}</div>
@@ -52,7 +75,7 @@ export default function ResumePreview({ resume }) {
         {/* 3. PROJECT EXPERIENCE / WORK EXPERIENCE */}
         {(projects && projects.length > 0) || (experience && experience.length > 0) ? (
           <section className="resume-section">
-            <h2>{resume.experience_type === 'project' ? 'PROJECT EXPERIENCE' : 'WORK EXPERIENCE'}</h2>
+            <h2>{getSectionTitle(resume.experience_type === 'project' ? 'PROJECT EXPERIENCE' : 'WORK EXPERIENCE')}</h2>
             
             {/* Show experience first if available */}
             {experience && experience.length > 0 && experience.map((exp) => (
@@ -93,7 +116,7 @@ export default function ResumePreview({ resume }) {
         {/* 4. EDUCATION */}
         {education && education.length > 0 && (
           <section className="resume-section">
-            <h2>EDUCATION</h2>
+            <h2>{getSectionTitle('EDUCATION')}</h2>
             {education.map((edu) => (
               <div key={edu.id} className="education-item">
                 <h3>{edu.degree} {edu.field_of_study && `in ${edu.field_of_study}`}</h3>
@@ -114,7 +137,7 @@ export default function ResumePreview({ resume }) {
         {/* 5. TECHNICAL SKILLS */}
         {skills && skills.filter(s => s.category !== 'Soft Skills').length > 0 && (
           <section className="resume-section">
-            <h2>TECHNICAL SKILLS</h2>
+            <h2>{getSectionTitle('TECHNICAL SKILLS')}</h2>
             <div className="skills-compact">
               {(() => {
                 const technicalSkills = skills.filter(s => s.category !== 'Soft Skills');
@@ -138,7 +161,7 @@ export default function ResumePreview({ resume }) {
         {/* 6. SOFT SKILLS */}
         {skills && skills.filter(s => s.category === 'Soft Skills').length > 0 && (
           <section className="resume-section">
-            <h2>SOFT SKILLS</h2>
+            <h2>{getSectionTitle('SOFT SKILLS')}</h2>
             <div className="soft-skills-compact">
               {skills.filter(s => s.category === 'Soft Skills').map((skill) => (
                 <div key={skill.id} className="soft-skill-line">• {skill.name}</div>
@@ -150,7 +173,7 @@ export default function ResumePreview({ resume }) {
         {/* 7. ACHIEVEMENTS & CERTIFICATIONS */}
         {certifications && certifications.length > 0 && (
           <section className="resume-section">
-            <h2>ACHIEVEMENTS & CERTIFICATIONS</h2>
+            <h2>{getSectionTitle('ACHIEVEMENTS & CERTIFICATIONS')}</h2>
             {certifications.map((cert) => (
               <div key={cert.id} className="certification-item">
                 <div className="cert-header">
@@ -167,7 +190,7 @@ export default function ResumePreview({ resume }) {
         {/* 8. REFEREES */}
         {references && references.length > 0 && (
           <section className="resume-section">
-            <h2>REFEREES</h2>
+            <h2>{getSectionTitle('REFEREES')}</h2>
             <div className="referees-grid">
               {references.map((ref) => (
                 <div key={ref.id} className="referee-item">

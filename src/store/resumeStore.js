@@ -7,6 +7,22 @@ export const useResumeStore = create((set, get) => ({
   currentResume: null,
   loading: false,
   autoSaveTimer: null,
+  atsMode: false, // ATS Mode toggle state
+  
+  // Toggle ATS Mode
+  setATSMode: (enabled) => {
+    set({ atsMode: enabled });
+    
+    // If enabling ATS mode and there's a current resume, lock certain settings
+    if (enabled && get().currentResume) {
+      const resumeId = get().currentResume.id;
+      // Force single column layout for ATS
+      get().updateResume(resumeId, { 
+        layout: 'one-column',
+        template_id: 'modern' // Use clean template
+      });
+    }
+  },
   
   // Fetch all resumes for the current user
   fetchResumes: async () => {

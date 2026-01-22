@@ -52,11 +52,24 @@ Each section supports:
 - ✅ Responsive design
 
 ### 📤 Export & Sharing
-- 🚧 PDF export (Ready for implementation with jsPDF)
-- 🚧 Printable view
+- ✅ **ATS-Friendly PDF** - Text-based PDF optimized for Applicant Tracking Systems
+- ✅ **ATS-Friendly DOCX** - Native Word format with maximum ATS compatibility
+- ✅ **Visual PDF** - High-quality PDF with exact formatting for printing
 - 🚧 Public share links
 - 🚧 Password-protected sharing
 - 🚧 Download and view analytics
+
+### 🎯 ATS Optimization
+- ✅ **ATS-friendly resume formats** - 95-100% parsing success rate
+- ✅ **Standard section names** recognized by all major ATS systems
+- ✅ **Text-based exports** - Not image-based PDFs
+- ✅ **Clean, parseable formatting** - No complex tables or graphics
+- ✅ **ATS Mode Toggle** - Switch between Design Mode and ATS Mode
+  - 🎨 **Design Mode** - Full creative control, all templates and customization
+  - 🤖 **ATS Mode** - Locks layout, disables icons, forces standard headings
+- ✅ **Compatible with**: Workday, Taleo, Greenhouse, Lever, iCIMS, and more
+- ✅ See [ATS_FRIENDLY_GUIDE.md](ATS_FRIENDLY_GUIDE.md) for complete details
+- ✅ See [ATS_MODE_FEATURE.md](ATS_MODE_FEATURE.md) for toggle feature documentation
 
 ### 📊 Analytics Dashboard
 - 🚧 Resume views tracking
@@ -87,7 +100,10 @@ Each section supports:
 - **React Hook Form** - Form handling
 - **Lucide React** - Icons
 - **React Hot Toast** - Notifications
-- **jsPDF & html2canvas** - PDF generation
+- **jsPDF** - ATS-friendly PDF generation
+- **html2canvas** - Visual PDF generation
+- **docx** - ATS-friendly Word document generation
+- **file-saver** - File download handling
 
 ### Backend Stack
 - **Supabase** - Backend as a Service

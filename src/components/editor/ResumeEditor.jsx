@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useResumeStore } from '../../store/resumeStore';
 import { Save, Eye, ArrowLeft, Download, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import ATSModeToggle from './ATSModeToggle';
 import PersonalInfoSection from './sections/PersonalInfoSection';
 import SummarySection from './sections/SummarySection';
 import ExperienceSection from './sections/ExperienceSection';
@@ -20,7 +21,7 @@ import './ResumeEditor.css';
 export default function ResumeEditor() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { currentResume, loading, fetchResume, updateResume, scheduleAutoSave } = useResumeStore();
+  const { currentResume, loading, fetchResume, updateResume, scheduleAutoSave, atsMode, setATSMode } = useResumeStore();
   const [showPreview, setShowPreview] = useState(false);
   const [activeTab, setActiveTab] = useState('content');
   const [showExportModal, setShowExportModal] = useState(false);
@@ -103,6 +104,11 @@ export default function ResumeEditor() {
       
       <div className="editor-container">
         <div className="editor-sidebar">
+          <ATSModeToggle 
+            atsMode={atsMode} 
+            onToggle={setATSMode}
+          />
+          
           <div className="editor-tabs">
             <button
               className={`tab ${activeTab === 'content' ? 'active' : ''}`}
@@ -113,6 +119,8 @@ export default function ResumeEditor() {
             <button
               className={`tab ${activeTab === 'design' ? 'active' : ''}`}
               onClick={() => setActiveTab('design')}
+              disabled={atsMode}
+              title={atsMode ? 'Design options locked in ATS Mode' : 'Customize design'}
             >
               Design
             </button>
@@ -142,14 +150,21 @@ export default function ResumeEditor() {
             </div>
           ) : (
             <div className="design-options">
+              {atsMode && (
+                <div className="ats-lock-message">
+                  <p>🤖 Design options are locked in ATS Mode to ensure maximum compatibility with Applicant Tracking Systems.</p>
+                  <p>Switch to Design Mode to customize templates, colors, and layouts.</p>
+                </div>
+              )}
               <div className="design-section">
                 <h3>Template</h3>
                 <div className="template-grid">
                   {['modern', 'classic', 'minimal', 'creative', 'executive', 'technical'].map((template) => (
                     <button
                       key={template}
-                      className={`template-option ${currentResume.template_id === template ? 'active' : ''}`}
-                      onClick={() => updateResume(id, { template_id: template })}
+                      className={`template-option ${currentResume.template_id === template ? 'active' : ''} ${atsMode && template !== 'modern' ? 'disabled' : ''}`}
+                      onClick={() => !atsMode && updateResume(id, { template_id: template })}
+                      disabled={atsMode && template !== 'modern'}
                     >
                       {template}
                     </button>
@@ -163,9 +178,10 @@ export default function ResumeEditor() {
                   {['blue', 'green', 'purple', 'red', 'gray'].map((color) => (
                     <button
                       key={color}
-                      className={`color-option ${currentResume.color_theme === color ? 'active' : ''}`}
+                      className={`color-option ${currentResume.color_theme === color ? 'active' : ''} ${atsMode ? 'disabled' : ''}`}
                       style={{ background: getColorValue(color) }}
-                      onClick={() => updateResume(id, { color_theme: color })}
+                      onClick={() => !atsMode && updateResume(id, { color_theme: color })}
+                      disabled={atsMode}
                     />
                   ))}
                 </div>
@@ -175,8 +191,9 @@ export default function ResumeEditor() {
                 <h3>Font</h3>
                 <select
                   value={currentResume.font_family || 'inter'}
-                  onChange={(e) => updateResume(id, { font_family: e.target.value })}
+                  onChange={(e) => !atsMode && updateResume(id, { font_family: e.target.value })}
                   className="font-select"
+                  disabled={atsMode}
                 >
                   <option value="inter">Inter</option>
                   <option value="roboto">Roboto</option>
@@ -191,13 +208,16 @@ export default function ResumeEditor() {
                 <div className="layout-options">
                   <button
                     className={`layout-option ${currentResume.layout === 'one-column' ? 'active' : ''}`}
-                    onClick={() => updateResume(id, { layout: 'one-column' })}
+                    onClick={() => !atsMode && updateResume(id, { layout: 'one-column' })}
+                    disabled={atsMode}
                   >
                     One Column
                   </button>
                   <button
-                    className={`layout-option ${currentResume.layout === 'two-column' ? 'active' : ''}`}
-                    onClick={() => updateResume(id, { layout: 'two-column' })}
+                    className={`layout-option ${currentResume.layout === 'two-column' ? 'active' : ''} ${atsMode ? 'disabled' : ''}`}
+                    onClick={() => !atsMode && updateResume(id, { layout: 'two-column' })}
+                    disabled={atsMode}
+                    title={atsMode ? 'Two-column layout disabled in ATS Mode' : ''}
                   >
                     Two Column
                   </button>

@@ -14,6 +14,26 @@
   color: #2d3748;
 }
 
+/* ATS Mode - Force simple, clean layout */
+.resume-template.ats-mode {
+  font-family: 'Helvetica', 'Arial', sans-serif !important;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.resume-template.ats-mode .resume-header {
+  border-bottom: 2px solid #2d3748;
+}
+
+.resume-template.ats-mode .resume-section h2 {
+  color: #1a202c;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+}
+
 .resume-header {
   text-align: center;
   padding-bottom: 1.5rem;
